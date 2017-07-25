@@ -1,10 +1,9 @@
 function secretArchivesLock(lock, actions) {
     //Reduce the instruction set, improve performance.
-    let reducedActions = actions
-                            .replace(/(L(L)+|(L|R)+L)/g, 'L')
-                            .replace(/(R(R)+|(L|R)+R)/g, 'R')
-                            .replace(/(U(U)+|(D|U)+U)/g, 'U')
-                            .replace(/(D(D)+|(U|D)+D)/g,'D');
+    let reducedActions = actions.replace(/(L(L)+|(L|R)+L)/g, 'L')
+                                .replace(/(R(R)+|(L|R)+R)/g, 'R')
+                                .replace(/(U(U)+|(D|U)+U)/g, 'U')
+                                .replace(/(D(D)+|(U|D)+D)/g, 'D');
     
     //Rotate the matrix 90 degrees clockwise
     const rotateRight = (lockState) => 
@@ -40,18 +39,18 @@ function secretArchivesLock(lock, actions) {
     
     //Define behavior for each action
     const executeAction = {
+        "L": (lockState) => shiftLeft(lockState),
+        "R": (lockState) => shiftRight(lockState),
         "U": (lockState) => {
-            lockState = rotateRight(lockState);
-            lockState = shiftRight(lockState);
-            return rotateLeft(lockState);
+            let newState = rotateRight(lockState);
+            newState = shiftRight(newState);
+            return rotateLeft(newState);
         },
         "D": (lockState) => {
-            lockState = rotateRight(lockState);
-            lockState = shiftLeft(lockState);
-            return rotateLeft(lockState);
-        },
-        "L": (lockState) => shiftLeft(lockState),
-        "R": (lockState) => shiftRight(lockState)
+            let newState = rotateRight(lockState);
+            newState = shiftLeft(newState);
+            return rotateLeft(newState);
+        }
     };
 
     //Execute all actions in sequence
